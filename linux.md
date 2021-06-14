@@ -215,7 +215,7 @@ usermod -g usergroup username
 ### 用户信息存放
 
 * 用户配置文件：/etc/passwd
-    * ![image-20210606010043121](Untitled.assets/image-20210606010043121.png)
+    * ![image-20210606010043121](linux.assets/image-20210606010043121.png)
     * 用户名:密码(加密在shadow):用户id:组id::家目录:对应的shell
 
 * 组配置文件：/etc/group
@@ -310,5 +310,32 @@ mv oldname newname
 
 less在显示文件内容时，根据显示需要进行加载内容，对大型文件有较高效率
 
+* space 向下翻页
+
+* enter 向下翻行
+* q 退出
+* pageup
+* pagedown
+* /字串    向下搜寻【字串】功能：n：向下查找：N：向上查找
+* ?字串    向上搜寻【字串】功能：n：向上查找：N：向下查找
+
+
+
+#### echo
+
 ​	
+
+#### `>`和`>>`
+
+`>`输出重定向
+
+`>>`追加
+
+
+
+
+
+
+
+
 
