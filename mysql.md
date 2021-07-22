@@ -287,3 +287,51 @@ DELETE FROM [table_name] WHERE [some_column=some_value];
 
 
 
+## SQL 别名
+
+将表名称或列名称指定别名，创建别名让列名称可读性更强
+
+```SQL
+SELECT column_name AS alias_name FROM table_name;
+SELECT column_name FROM table_name AS alias_name;
+```
+
+
+
+将多列结合一起：
+
+```sql
+SELECT name, CONCAT(url, ', ', alexa, ', ', country) AS site_info FROM websites;
+```
+
+对表使用别名：
+
+```sql
+SELECT w.name FROM websites as w WHERE w.name='Google';
+```
+
+```sql
+SELECT w.name, w.url, a.count, a.date FROM Websites AS w, access_log AS a WHERE a.site_id=w.id and w.name="菜鸟教程";
+```
+
+在下面的情况下，使用别名很有用：
+
+* 在查询中涉及超过一个表
+* 在查询中使用了函数
+* 列名称很长或者可读性差
+* 需要把两个列或者多个列结合在一起
+
+
+
+## SQL 连接（JOIN）
+
+sql join用于将两个表结合起来
+
+下图展示了 LEFT JOIN、RIGHT JOIN、INNER JOIN、OUTER JOIN 相关的 7 种用法。
+
+[![img](mysql.assets/sql-join.png)](https://www.runoob.com/wp-content/uploads/2019/01/sql-join.png)
+
+
+
+
+
