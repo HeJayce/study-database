@@ -92,6 +92,201 @@ show tables;
 
 
 
+## CREATE TABLE 创建表
+
+```sql
+CREATE TABLE table_name
+(
+column_name1 data_type(size),
+column_name2 data_type(size),
+column_name3 data_type(size)
+);
+
+CREATE TABLE Persons
+(
+PersonID int,
+LastName varchar(255),
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255)
+);
+```
+
+可使用 INSERT INTO 语句向空表写入数据。
+
+### 约束
+
+在创建表的时候用于规定数据规则，比如NOT NULL
+
+在 SQL 中，我们有如下约束：
+
+#### NOT NULL
+
+* 指示某列不能存储 NULL 值。在默认的情况下，表的列接受 NULL 值。
+
+#### UNIQUE 
+
+* 保证某列的每行必须有唯一的值。比如ID等值需要唯一性
+
+* 语法：
+```sql
+ /*MySQL*/
+ CREATE TABLE Persons
+ (
+ P_Id int NOT NULL,
+ Name varchar(255) NOT NULL,
+ UNIQUE (P_Id)
+ );
+ /*SQL Server / Oracle / MS Access*/
+ CREATE TABLE Persons
+ (
+ P_Id int NOT NULL UNIQUE,
+ Name varchar(255) NOT NULL,
+ );
+```
+
+* 定义多个列的 UNIQUE 约束：
+
+```sql
+ /*MySQL / SQL Server / Oracle / MS Access：*/
+ CREATE TABLE Persons
+ (
+ P_Id int NOT NULL,
+ Name varchar(255) NOT NULL,
+ CONSTRAINT uc_PersonID UNIQUE (P_Id,LastName)
+ );
+```
+
+* 当表已被创建时，如需在 "P_Id" 列创建 UNIQUE 约束，请使用下面的 SQL：
+
+```sql
+  ALTER TABLE Persons ADD UNIQUE (P_Id);
+```
+* 定义多个列的 UNIQUE 约束:
+
+```sql
+ALTER TABLE Persons ADD CONSTRAINT uc_PersonID UNIQUE (P_Id,LastName);
+```
+
+* **撤销UNIQUE约束**
+
+
+```sql
+/*MySQL*/
+ALTER TABLE Persons
+DROP INDEX uc_PersonID
+/*SQL Server / Oracle / MS Access*/
+ALTER TABLE Persons
+DROP CONSTRAINT uc_PersonID
+```
+
+  
+
+#### PRIMARY KEY
+
+* NOT NULL 和 UNIQUE 的结合。确保某列（或两个列多个列的结合）有唯一标识，有助于更容易更快速地找到表中的一个特定的记录。
+
+* **主键必须包含唯一的值。**
+
+    **主键列不能包含 NULL 值。**
+
+    **每个表都应该有一个主键**，**并且每个表只能有一个主键**。
+
+    ```sql
+    /*MySQL*/
+    CREATE TABLE Persons
+    (
+    P_Id int NOT NULL,
+    Name varchar(255) NOT NULL,
+    PRIMARY KEY (P_Id)
+    )
+    
+    /*SQL Server / Oracle / MS Access：*/
+    CREATE TABLE Persons
+    (
+    P_Id int NOT NULL PRIMARY KEY,
+    Name varchar(255) NOT NULL,
+    )
+    ```
+
+* **ALTER TABLE 时的 SQL PRIMARY KEY 约束**
+
+    当表已被创建时，如需在 "P_Id" 列创建 PRIMARY KEY 约束，请使用下面的 SQL：
+
+    ```sql
+    /*MySQL / SQL Server / Oracle / MS Access*/
+    ALTER TABLE Persons ADD PRIMARY KEY (P_Id)
+    ```
+
+    如需命名 PRIMARY KEY 约束，并定义多个列的 PRIMARY KEY 约束，请使用下面的 SQL 语法：
+
+    ```sql
+    /*MySQL / SQL Server / Oracle / MS Access*/
+    ALTER TABLE Persons ADD CONSTRAINT pk_PersonID PRIMARY KEY (P_Id,LastName)
+    ```
+
+    **注释：**如果您使用 ALTER TABLE 语句添加主键，必须把主键列声明为不包含 NULL 值（在表首次创建时）。
+
+    ------
+
+    **撤销 PRIMARY KEY 约束**
+
+    如需撤销 PRIMARY KEY 约束，请使用下面的 SQL：
+
+    ```sql
+    /*MySQL*/
+    ALTER TABLE Persons DROP PRIMARY KEY
+    /*SQL Server / Oracle / MS Access*/
+    ALTER TABLE Persons DROP CONSTRAINT pk_PersonID
+    ALTER TABLE Persons DROP CONSTRAINT P_Id
+    ```
+    
+    
+
+#### FOREIGN KEY
+
+* 一个表中的 FOREIGN KEY 指向另一个表中的 UNIQUE KEY(唯一约束的键)。保证一个表中的数据匹配另一个表中的值的参照完整性。
+
+* 外键的解释：一个表中的某一列为外键，与另一个表的唯一约束键（UNIQUE KEY）
+
+* FOREIGN KEY 约束用于预防破坏表之间连接的行为。
+
+    FOREIGN KEY 约束也能防止非法数据插入外键列，因为它必须是它指向的那个表中的值之一
+
+    
+
+    ```sql
+    /*MySQL*/
+    CREATE TABLE Orders
+    (
+    O_Id int NOT NULL,
+    OrderNo int NOT NULL,
+    P_Id int,
+    PRIMARY KEY (O_Id),
+    FOREIGN KEY (P_Id) REFERENCES Persons(P_Id)
+    )
+    
+    /*SQL Server / Oracle / MS Access*/
+    CREATE TABLE Orders
+    (
+    O_Id int NOT NULL PRIMARY KEY,
+    OrderNo int NOT NULL,
+    P_Id int FOREIGN KEY REFERENCES Persons(P_Id)
+    )
+    ```
+
+    
+
+#### CHECK
+
+保证列中的值符合指定的条件。
+
+#### DEFAULT
+
+规定没有给列赋值时的默认值。
+
+
+
 
 
 ## SELECT 选取
@@ -330,6 +525,68 @@ sql join用于将两个表结合起来
 下图展示了 LEFT JOIN、RIGHT JOIN、INNER JOIN、OUTER JOIN 相关的 7 种用法。
 
 [![img](mysql.assets/sql-join.png)](https://www.runoob.com/wp-content/uploads/2019/01/sql-join.png)
+
+
+
+### INNER JOIN
+
+在表中存在至少一个匹配
+
+```sql
+SELECT column_name FROM table1 INNER JOIN table2 ON table1.column_name=table2.column_name;
+SELECT column_name FROM table1 JOIN table2 ON table1.column_name=table2.column_name;
+```
+
+INNER JOIN 与JOIN相同
+
+![image-20210723094810785](mysql.assets/image-20210723094810785.png)
+
+
+
+
+
+### LEFT JOIN
+
+从左表返回所有的行，如果右表没有匹配，结果为NULL
+
+![image-20210725182757047](mysql.assets/image-20210725182757047.png)
+
+### RIGHT JOIN
+
+从右表返回所有的行，如果左表没有匹配，结果为NULL
+
+### FULL OUTER JOIN
+
+只要左右表中存在一个表匹配，则返回行
+
+FULL OUTER JOIN 关键字结合了 LEFT JOIN 和 RIGHT JOIN 的结果。
+
+```sql
+SELECT column_name(s) FROM table1 FULL OUTER JOIN table2 ON table1.column_name=table2.column_name
+```
+
+
+
+## SQL UNION
+
+`UNION`操作符**合并**两个以上`SELECT`语句
+
+请注意，UNION 内部的每个 SELECT 语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每个 SELECT语句中的列的顺序必须相同。
+
+
+
+## INSERT INTO SELECT
+
+INSERT INTO SELECT 语句从一个表复制数据，然后把数据插入到一个已存在的表中。目标表中任何已存在的行都不会受影响。
+
+复制希望的列插入到另一个已存在的表中
+
+```sql
+INSERT INTO table2 (column_name(s)) SELECT column_name(s) FROM table1;
+INSERT INTO Websites (name, country) SELECT app_name, country FROM apps;
+```
+
+
 
 
 
