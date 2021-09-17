@@ -218,7 +218,7 @@ usermod -g usergroup username
 ### 用户信息存放
 
 * 用户配置文件：/etc/passwd
-    * ![image-20210606010043121](linux.assets/image-20210606010043121.png)
+    * ![image-20210606010043121](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202109171526648.png)
     * 用户名:密码(加密在shadow):用户id:组id::家目录:对应的shell
 
 * 组配置文件：/etc/group

@@ -8,7 +8,7 @@
 
 ```
 apt-get update
-aptget install mysql-server
+apt-get install mysql-server
 ```
 
 ### 连接
@@ -25,7 +25,7 @@ vim /etc/mysql/mysql.conf.d/mysqld.cnf
 
 将bind-address   = 127.0.0.1注释掉
 
-![image-20210721175850771](Untitled.assets/image-20210721175850771.png)
+![image-20210721175850771](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202109171525629.png)
 
 重启即可
 
@@ -308,6 +308,8 @@ SELECT * FROM student;
 
 
 
+
+
 ### SELECT LIMIT
 
 用于返回规定要返回记录的数目
@@ -524,7 +526,7 @@ sql join用于将两个表结合起来
 
 下图展示了 LEFT JOIN、RIGHT JOIN、INNER JOIN、OUTER JOIN 相关的 7 种用法。
 
-[![img](mysql.assets/sql-join.png)](https://www.runoob.com/wp-content/uploads/2019/01/sql-join.png)
+[![img](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202109171525432.png)](https://www.runoob.com/wp-content/uploads/2019/01/sql-join.png)
 
 
 
@@ -539,7 +541,7 @@ SELECT column_name FROM table1 JOIN table2 ON table1.column_name=table2.column_n
 
 INNER JOIN 与JOIN相同
 
-![image-20210723094810785](mysql.assets/image-20210723094810785.png)
+![image-20210723094810785](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202109171525690.png)
 
 
 
@@ -549,7 +551,7 @@ INNER JOIN 与JOIN相同
 
 从左表返回所有的行，如果右表没有匹配，结果为NULL
 
-![image-20210725182757047](mysql.assets/image-20210725182757047.png)
+![image-20210725182757047](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202109171525903.png)
 
 ### RIGHT JOIN
 
