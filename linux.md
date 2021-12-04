@@ -1,5 +1,75 @@
 # Linux
 
+## 
+
+## 终端
+
+1. 物理终端
+
+    直接接入本机
+
+2. 虚拟终端
+
+    在物理终端商软件虚拟实现的终端，centos6 有默认6个虚拟终端
+
+    Ctrl + Alt + Fn （n = 1-6）
+
+    设备文件路径：/dev/tty#
+
+3. 模拟终端
+
+    图形界面打开的命令行、ssh、telnet
+
+    设备文件路径：/dev/pts/# 无穷个
+
+查看终端设备`tty`
+
+
+
+## 命令提示符
+
+`prompt`
+
+[root@localhost ~]# 
+
+​	[root@localhost ~]  : PS1
+
+​		prompt:
+
+​			管理员：#
+
+​			普通用户：$
+
+
+
+## 命令
+
+输入命令，回车:
+
+​	shell程序找到键入命令所对应的可执行程序或代码，并由其分析后提交给内核分配资源将其运行起来。表现为一个或多个进程。
+
+在shell中可执行的命令有两类:
+
+​	内建命令:由shell自带的，而且通过某命令形式提供;
+
+​	外部命令:在当前系统的某文件系统路径下有对应的可执行程序文件:
+
+​	which, whereis
+
+区别内部或外部命令:
+
+​		`type COMMAND`
+
+shell 程序可搜寻的执行文件的路径定义在PATH环境变量中：
+
+```shell
+ehco $PATH	
+```
+
+![image-20211204233557973](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/image-20211204233557973.png)
+
+
+
 ## 连接
 
 ### linux&macos
@@ -17,6 +87,8 @@ ssh -i ~/.ssh/jayce.pem username@ip
 ```
 
 
+
+文件
 
 
 
