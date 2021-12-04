@@ -68,6 +68,31 @@ ehco $PATH
 
 ![image-20211204233557973](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/image-20211204233557973.png)
 
+自左至右依次查询，查到停止
+
+shell搜寻代外部命令的路径结果会缓存至kv（key-value）存储中：
+
+可用命令`hash`命令查看
+
+![image-20211204234259452](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/image-20211204234259452.png)
+
+**缓存副作用：**
+
+如果命令位置发生了转移，系统还是会按缓存路径运行，导致命令失效
+
+```sh
+mv /bin/ls /usr/bin/ls
+ls
+# -bash: /bin/ls: NO such file or directory
+```
+
+清除缓存：
+
+```sh
+hash -d [command] #删除一个命令缓存
+hash -r  #删除所有缓存
+```
+
 
 
 ## 连接
@@ -300,33 +325,81 @@ usermod -g usergroup username
 
 ## 常用指令
 
-### `man`
+## `man`
 
 ​	查看指令手册
 
-### `pwd`
+`/usr/share/man` 
+
+man1---man9
+
+有多个man的目的是为了区分权限
+
+​	`man1` 用户命令
+
+​	`man2` 系统调用
+
+​	`man3` c库调用
+
+​	`man4` 设备及特殊文件
+
+​	`man5` 配置文件格式
+
+​	`man6` 游戏
+
+​	`man7` 杂项
+
+​	`man8` 管理类命令
+
+有些关键字在不止一个章节中
+
+指导章节：man # [COMMAND]
+
+`man`命令配置文件`/etc/man.config`
+
+​	`MANPATH  /.../.../...`
+
+### 操作方法
+
+Space，向文件尾翻屏: 
+
+b，向文件首部翻屏:
+
+d，向文件尾部翻半屏:
+
+u，向文件首部翻半屏:
+
+RETURN，向文件尾部翻一行
+
+y ，向文件首部翻一行
+
+q ，退出
+
+
+
+## `pwd`
 
 ​	查看当前位置的绝对路径
 
-### `ls`
+## `ls`
 
 ​	-a 显示所有文件包括隐藏
 
 ​	-l 以列表的形式
 
-### `mkdir`
+## `mkdir`
 
 ​	创建目录
 
 ​	-p 创建多级目录
 
-### `rm`	
+## `rm`	
 
 ​	-r 递归删除
 
 ​	-f 强制删除
 
-### `cp`
+## `cp`
 
 ```
 cp 	1.txt /home
@@ -338,7 +411,7 @@ cp 	1.txt /home
 
 
 
-### `mv`
+## `mv`
 
 ​	移动或重命名
 
@@ -356,7 +429,7 @@ mv oldname newname
 
 ​	
 
-### `cat`
+## `cat`
 
 ​	查看文件内容
 
@@ -364,7 +437,7 @@ mv oldname newname
 
 ​	配合 | more 按页显示文本内容
 
-#### more
+### more
 
 * space 向下翻页
 * enter 向下翻行
@@ -376,7 +449,7 @@ mv oldname newname
 
 
 
-#### less	
+### less	
 
 功能与more类似，但比more强大
 
@@ -393,9 +466,7 @@ less在显示文件内容时，根据显示需要进行加载内容，对大型�
 
 
 
-#### echo
-
-​	
+## echo
 
 #### `>`和`>>`
 
@@ -404,6 +475,28 @@ less在显示文件内容时，根据显示需要进行加载内容，对大型�
 `>>`追加
 
 
+
+## `history`
+
+记录历史操作
+
+登陆shell时，会读取命令历史文件中记录下来的命令： ~/.bash_history	
+
+登陆进shell后，新执行的命令只会记录在缓存中
+
+登出shell后，会被追加至记录里
+
+* `-a `  更新历史记录文件
+* `-d`  删除历史记录命令 `history -d 100`
+* `-c`  清空命令历史记录
+
+快捷操作：
+
+`!100`  运行第100行历史记录的命令
+
+`!string`  调用历史中最近一个以string开头的命令
+
+`!!` 重复运行上一条命令
 
 
 
