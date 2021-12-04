@@ -1,5 +1,7 @@
 # Linux
 
+
+
 ## 终端
 
 1. 物理终端
@@ -109,7 +111,7 @@ ssh username@ip
 ssh -i ~/.ssh/jayce.pem username@ip
 ```
 
-
+jayce.pem 为私钥
 
 文件
 
