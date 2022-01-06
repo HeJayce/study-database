@@ -38,6 +38,26 @@ prompt
 
  普通用户：$
 
+
+
+## 挂载
+
+
+
+## 权限
+
+文件权限：r读，w写，x执行
+
+rw- r-- r--
+
+u    g   o  
+
+u所有者 g所属组 o 其他人
+
+权限够用就行，除了可执行文件（脚本等），不需要执行权限
+
+
+
 ## 命令
 
 输入命令，回车:
@@ -102,7 +122,7 @@ ssh username@ip
 使用私钥登陆：
 
 ```
-ssh -i ~/.ssh/jayce.pem username@ip
+ssh -i ~/.ssh/jayce.pe username@ip
 ```
 
 文件
@@ -350,9 +370,23 @@ q ，退出
 
 ## `ls`
 
- -a 显示所有文件包括隐藏
+` -a` 显示所有文件包括隐藏
 
- -l 以列表的形式
+` -l `以列表的形式
+
+​	![image-20220106224229321](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202201062242168.png)
+
+​	d：目录   -：文件   l：软连接
+
+`-h` humman人性化，字节大小带上单位
+
+`-d` 显示目录本身
+
+![image-20220106225118919](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202201062251334.png)
+
+`-i` 查询文件号
+
+
 
 ## `mkdir`
 
@@ -362,9 +396,9 @@ q ，退出
 
 ## `rm`
 
- -r 递归删除
+` -r `递归删除
 
- -f 强制删除
+`-f `强制删除
 
 ## `cp`
 
