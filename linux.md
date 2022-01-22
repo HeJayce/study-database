@@ -661,7 +661,7 @@ grep -C 3 bash oss.sh
 
 总结：`-A`选项，是 After 的缩写**查看后面**，`-B`选项，是 Before 的缩写查看前面，`-C`选项，它是`-A`和`-B`选项的合体**两边都看**
 
-### grep 正则表达式
+### grep正则表达式
 
 
 
@@ -682,3 +682,58 @@ grep -C 3 bash oss.sh
 ## `locate`       
 
 配合数据库查看文件位置 ,详情：locate -h查看帮助信息
+
+
+
+## `cut`
+
+显示每行内容
+
+由此可以实现提取每一行的第n个字符
+
+参数：
+
+- -b  以字节为单位进行分割
+
+- -c  以字符为单位进行分割
+
+- -d  自定义分隔符
+
+- -f  与-d一起使用，指定显示哪个区域
+
+  实例：
+
+  ```sh
+  cut -d "%" -f 1
+  ```
+
+  以%为分隔符，截取百分号前面的数值 -f 取截取后的第一行
+
+  
+
+
+
+## `awk`
+
+```sh
+awk '条件1{动作1} 条件2{动作2}..' filename 
+```
+
+```sh
+df -h|grep "vda1"|awk '{printf $5 "\t\n"}'|cut -d "%" -f 1
+```
+
+### 条件
+
+#### BEGIN
+
+在所有数据读取之前执行这条命令
+
+awk默认先读取第一行数据，如果
+
+```sh
+ps -ef|grep sshd|awk 'BEGIN{printf "输出进程号\n"} {print $2}'
+```
+
+![image-20220122172009408](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202201221720695.png)
+
