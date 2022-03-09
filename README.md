@@ -1,8 +1,14 @@
 # Mysql
 
+[TOC]
+
+
+
 ## 安装与连接
 
 ### 安装
+
+#### ubuntu
 
 系统：Ubuntu16.04
 
@@ -10,8 +16,6 @@
 apt-get update
 apt-get install mysql-server
 ```
-
-### 连接
 
 需要注意的是，在安装mysql 后是不可以使用navicat等远程工具进行连接的
 
@@ -35,6 +39,66 @@ service mysql restart
 ```
 
  接着授予权限：
+
+#### centos
+
+系统：centos7
+
+下载mysql5.7的本地仓库文件
+
+```sh
+wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm
+```
+
+将仓库信息添加至yum
+
+```shell
+yum -y install mysql57-community-release-el7-10.noarch.rpm
+```
+
+接着在通过yum进行安装
+
+```shell
+yum -y install mysql-community-server --nogpgcheck
+```
+
+此时mysql会取代mariadb
+
+启动mysql服务
+
+```sh
+systemctl start mysqld
+systemctl status mysqld
+```
+
+此时的登陆密码存放在文件里，查看密码，用该初始化密码登录
+
+```
+grep "A temporary password is generated" /var/log/mysqld.log|awk '{print $11}'
+```
+
+![image-20220309150733851](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202203091507458.png)
+
+使用命令登录数据库后，修改该默认密码，否则无法使用
+
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$Password';
+```
+
+其中，新密码必须使用大写，小写，数字和特殊字符组成
+
+开启远程登录
+
+```sql
+grant all privileges on *.* to 'root'@'%' identified by 'password' with grant option;
+flush privileges; 
+```
+
+其中%代表所有ip，password替换为数据库密码。
+
+
+
+### 连接
 
 登陆mysql
 
@@ -69,6 +133,40 @@ flush privileges;
 
 
 
+## 用户管理
+
+### 新建用户
+
+```sql
+creat user 'jayce'@'host' identified by 'password'
+```
+
+### 修改密码
+
+```sql
+alter user 'jayce'@'host' identified by 'password'
+```
+
+### 权限管理
+
+#### 查看用户权限
+
+```
+show grants for 'root'@'localhost';
+```
+
+#### 授予权限
+
+```sql
+grant privileges on databasename.table to 'username'@'host';
+```
+
+```sql
+revoke privileges on databasename.table to 'username'@'host';
+```
+
+
+
 ## 语法
 
 ### 查看数据库
@@ -92,7 +190,7 @@ show tables;
 
 
 
-## CREATE TABLE 创建表
+### CREATE TABLE 创建表
 
 ```sql
 CREATE TABLE table_name
@@ -289,7 +387,9 @@ DROP CONSTRAINT uc_PersonID
 
 
 
-## SELECT 选取
+### SELECT 选取
+
+当数据量大的时候，数据量会刷屏，使用pager less 可以切换less模式，除了pager less，还有pager more，pager awk、pager wc -l（统计行数）等，直接使用查询，可生效
 
 语法：
 
@@ -300,7 +400,7 @@ SELECT * FROM student;
 
 
 
-### SELECT DISTINST
+#### SELECT DISTINST
 
 返回唯一不同的值，可理解为不重复
 
@@ -310,7 +410,7 @@ SELECT * FROM student;
 
 
 
-### SELECT LIMIT
+#### SELECT LIMIT
 
 用于返回规定要返回记录的数目
 
@@ -331,7 +431,7 @@ SELECT * FROM websites LIMIT 2;输出前两个
 
 
 
-## SQL 通配符
+### SQL 通配符
 
 * `%` 类似于`*`
 * `_` 下划线表示一个字符；
@@ -339,7 +439,7 @@ SELECT * FROM websites LIMIT 2;输出前两个
 * `%M%` : 表示查询包含M的所有内容。
 * `%M_` : 表示查询以M在倒数第二位的所有内容。
 
-### 正则表达式
+#### 正则表达式
 
 SQL [charlist]
 
@@ -353,7 +453,7 @@ SELECT * FROM Websites WHERE name REGEXP '^[GFs]';
 
 
 
-## WHERE
+### WHERE
 
 用于提取满足条件的记录
 
@@ -363,7 +463,7 @@ SELECT [字段],[字段] FROM [表名] WHERE [字段] operator value;
 
 其中文本字段需要使用单引号
 
-### where运算符
+#### where运算符
 
 | 运算符  |                            描述                            | 语法                                    |
 | :------ | :--------------------------------------------------------: | --------------------------------------- |
@@ -410,7 +510,7 @@ SELECT * FROM Websites WHERE alexa > 15 AND (country='CN' OR country='USA');
 
 
 
-## ORDER BY 排序
+### ORDER BY 排序
 
 语法：
 
@@ -430,7 +530,7 @@ SELECT * FROM Websites ORDER BY alexa DESC;
 
 
 
-## INSERT INTO 插入
+### INSERT INTO 插入
 
 第一种形式，无需指定列名，只需提供被插值
 
@@ -451,7 +551,7 @@ select *  into scorebak from score  where neza='neza'  --也是插入一行,要�
 
 
 
-## UPDATE 更新
+### UPDATE 更新
 
 ```sql
 UPDATE [table_name] SET column1=value1,column2=value2,... WHERE some_column=some_value;
@@ -459,7 +559,7 @@ UPDATE [table_name] SET column1=value1,column2=value2,... WHERE some_column=some
 
 
 
-### Update 警告！
+#### Update 警告！
 
 在更新记录时要格外小心！在上面的实例中，如果我们省略了 WHERE 子句，如下所示：
 
@@ -474,7 +574,7 @@ SET alexa='5000', country='USA'
 
 
 
-## DELETE 删除
+### DELETE 删除
 
 ```sql
 DELETE FROM [table_name] WHERE [some_column=some_value];
@@ -484,7 +584,7 @@ DELETE FROM [table_name] WHERE [some_column=some_value];
 
 
 
-## SQL 别名
+### SQL 别名
 
 将表名称或列名称指定别名，创建别名让列名称可读性更强
 
@@ -520,7 +620,7 @@ SELECT w.name, w.url, a.count, a.date FROM Websites AS w, access_log AS a WHERE 
 
 
 
-## SQL 连接（JOIN）
+### SQL 连接（JOIN）
 
 sql join用于将两个表结合起来
 
@@ -530,7 +630,7 @@ sql join用于将两个表结合起来
 
 
 
-### INNER JOIN
+#### INNER JOIN
 
 在表中存在至少一个匹配
 
@@ -547,17 +647,17 @@ INNER JOIN 与JOIN相同
 
 
 
-### LEFT JOIN
+#### LEFT JOIN
 
 从左表返回所有的行，如果右表没有匹配，结果为NULL
 
 ![image-20210725182757047](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202109171525903.png)
 
-### RIGHT JOIN
+#### RIGHT JOIN
 
 从右表返回所有的行，如果左表没有匹配，结果为NULL
 
-### FULL OUTER JOIN
+#### FULL OUTER JOIN
 
 只要左右表中存在一个表匹配，则返回行
 
@@ -569,7 +669,7 @@ SELECT column_name(s) FROM table1 FULL OUTER JOIN table2 ON table1.column_name=t
 
 
 
-## SQL UNION
+#### SQL UNION
 
 `UNION`操作符**合并**两个以上`SELECT`语句
 
@@ -577,7 +677,7 @@ SELECT column_name(s) FROM table1 FULL OUTER JOIN table2 ON table1.column_name=t
 
 
 
-## INSERT INTO SELECT
+### INSERT INTO SELECT
 
 INSERT INTO SELECT 语句从一个表复制数据，然后把数据插入到一个已存在的表中。目标表中任何已存在的行都不会受影响。
 
@@ -590,8 +690,57 @@ INSERT INTO Websites (name, country) SELECT app_name, country FROM apps;
 
 
 
+## 数据导入导出
+
+### mysqldump
+
+| 参数名                          | 缩写 | 含义                          |
+| :------------------------------ | :--- | :---------------------------- |
+| --host                          | -h   | 服务器IP地址                  |
+| --port                          | -P   | 服务器端口号                  |
+| --user                          | -u   | MySQL 用户名                  |
+| --pasword                       | -p   | MySQL 密码                    |
+| --databases                     |      | 指定要备份的数据库            |
+| --all-databases                 |      | 备份mysql服务器上的所有数据库 |
+| --compact                       |      | 压缩模式，产生更少的输出      |
+| --comments                      |      | 添加注释信息                  |
+| --complete-insert               |      | 输出完成的插入语句            |
+| --lock-tables                   |      | 备份前，锁定所有数据库表      |
+| --no-create-db/--no-create-info |      | 禁止生成创建数据库语句        |
+| --force                         |      | 当出现错误时仍然继续备份操作  |
+| --default-character-set         |      | 指定默认字符集                |
+| --add-locks                     |      | 备份数据库表时锁定数据库表    |
+| --single-transaction            | 必加 | 备份时不影响数据库运行        |
+
+备份所有数据库：
+
+```shell
+mysqldump -uroot -p --all-databases >/all.db
+```
 
 
+
+
+
+### outfile & infile
+
+#### outfile 
+
+语法：
+
+```sql
+select * from table into outfile '/dic/dic/file' fields terminated by '|'
+```
+
+`fields terminated by '|'`代表以竖线分隔，默认为空格分隔
+
+#### infile
+
+语法：
+
+```sql
+load data infile '/dic/dic/file' into table database_name. tablename fields terminated by '|'
+```
 
 
 
