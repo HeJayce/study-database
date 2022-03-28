@@ -677,6 +677,28 @@ SELECT column_name(s) FROM table1 FULL OUTER JOIN table2 ON table1.column_name=t
 
 
 
+### NULL值处理
+
+- **IS NULL:** 当列的值是 NULL,此运算符返回 true。
+- **IS NOT NULL:** 当列的值不为 NULL, 运算符返回 true
+- **<=>:** 比较操作符（不同于 = 运算符），当比较的的两个值相等或者都为 NULL 时返回 true。**只比较NULL**
+
+**不能使用 = NULL 或 != NULL 在列中查找 NULL 值 **
+
+**注意：**
+
+```
+select * , columnName1+ifnull(columnName2,0) from tableName;
+```
+
+columnName1，columnName2 为 int 型，当 columnName2 中，有值为 null 时，columnName1+columnName2=null，
+
+ **ifnull(columnName2,0) 把 columnName2 中 null 值转为 0。**
+
+
+
+
+
 ### INSERT INTO SELECT
 
 INSERT INTO SELECT 语句从一个表复制数据，然后把数据插入到一个已存在的表中。目标表中任何已存在的行都不会受影响。
@@ -745,6 +767,107 @@ load data infile '/dic/dic/file' into table database_name. tablename fields term
 
 
 
+
+## 正则表达式
+
+MySQL中使用 REGEXP 操作符来进行正则表达式匹配。正则表达式不区分大小写，如果需要区分，则加上 BINARY 关键字 
+
+```sql
+SELECT * FROM table WHERE name REGEXP (BINARY)  'jayce';
+```
+
+
+
+常规的三个：（如果设置了RegExp 对象的 Multiline 属性，$ 也匹配 '\n' 或 '\r' 之前的位置。）
+
+`^`	匹配输入字符串的开始位置。
+
+`$`	匹配输入字符串的结束位置。
+
+`*`	匹配 0 次或多次。
+
+```sql
+-- 查找name字段中以'st'为开头的所有数据：
+SELECT name FROM person_tbl WHERE name REGEXP '^st';
+-- 查找name字段中以'ok'为结尾的所有数据：
+SELECT name FROM person_tbl WHERE name REGEXP 'ok$';
+-- 查找name字段中包含'mar'字符串的所有数据：
+SELECT name FROM person_tbl WHERE name REGEXP 'mar';
+-- 查找name字段中以'mar' 结尾并以任何前缀开头
+SELECT name FROM person_tbl WHERE name REGEXP '.*mar';
+```
+
+星号可用于与字符匹配 0 次或多次。例如，`REGEXP '.*abc'` 匹配的字符串以 abc 结尾并以任何前缀开头。因此，aabc、xyzabc 和 abc 匹配，但 bc 和 abcc 则不匹配。
+
+
+
+.	匹配除 "\n" 之外的任何单个字符。要匹配包括 '\n' 在内的任何字符，请使用像 '[.\n]' 的模式
+
+例如：
+
+```sql
+SELECT name FROM person_tbl WHERE name REGEXP '.*mar';
+SELECT name FROM person_tbl WHERE name REGEXP '[*mar]';
+```
+
+但是不可以写成：`'*mar*'`
+
+
+
+`+`	匹配前面的子表达式**一次或多次**。
+
+> 加号可用于与字符匹配 1 次或多次。例如，`'bre+'` 匹配 bre 和 bree，但不匹配 br。
+
+![image-20220328170923052](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202203281709030.png)
+
+意思就是刚好匹配还不行，必须前面多一个
+
+| 元字符 | 说明                                                         |
+| ------ | ------------------------------------------------------------ |
+| \*     | 匹配它前面的零个或多个子表达式，0个或多个匹配，效果与{0,}—致 |
+| \+     | 匹配它前面的一个或多个子表达式，1个或多个匹配，效果与{1,}一致 |
+| ?      | 匹配它前面的零个或一个子表达式，1个或0匹配，效果与{0,1}一致  |
+| {n}    | 等于n个匹配数目                                              |
+| {n,}   | 大于等于n个匹配                                              |
+| {n,m}  | 大于等于n小于等于m个, m<255                                  |
+
+
+
+`[] `字符集合。匹配所包含的任意一个字符
+
+```sql
+SELECT * FROM runoob_test_tbl WHERE runoob_author REGEXP '[OB]';
+```
+
+![image-20220328165035427](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202203281650265.png)
+
+`[^...] `  负值字符集合。匹配未包含的任意字符。
+
+```sql
+SELECT * FROM runoob_test_tbl WHERE runoob_author REGEXP '[^RUNOOB]';
+```
+
+结果：
+
+![image-20220328165604954](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202203281656914.png)
+
+结果发现RUNOOB并没有出现，原因是`[^RUNOOB]`过滤掉了`RUNOOB`
+
+
+
+`p1|p2|p3`	匹配 p1 或 p2 或 p3。例如，'z|food' 能匹配 "z" 或 "food"。'(z|f)ood' 则匹配 "zood" 或 "food"。
+
+
+
+### 正则表达式测试
+
+可以在不使用数据库表的情况下用 SELECT 语句来测试正则表达式，REGEXP 检查总是**返回0（没有匹配）或1（匹配）**。可以用带文字串的 REGEXP 来测试表达式，并试验它们。
+
+```sql
+SELECT 'Hern' REGEXP '[0-9]';
+```
+
+![image-20220328164007959](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202203281640805.png)
 
 
 
