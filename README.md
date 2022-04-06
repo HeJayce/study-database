@@ -946,6 +946,22 @@ select * from table into outfile '/dic/dic/file' fields terminated by '|'
 
 `fields terminated by '|'`代表以竖线分隔，默认为空格分隔
 
+注意，不是这里涉及到输出限制，查询secure_file_priv参数，看看mysql可以输出到哪里
+
+> ERROR 1290 (HY000): The MySQL server is running with the --secure-file-priv option so it cannot execute this statement
+
+```sql
+show global variables like '%secure_file_priv%';
+```
+
+secure_file_priv 为 NULL 时，表示限制mysqld不允许导入或导出。
+
+secure_file_priv 为 /tmp 时，表示限制mysqld只能在/tmp目录中执行导入导出，其他目录不能执行。
+
+secure_file_priv 没有值时，表示不限制mysqld在任意目录的导入导出。
+
+secure_file_priv 参数是只读参数，不能使用set global命令修改。
+
 #### infile
 
 语法：
