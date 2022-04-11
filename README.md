@@ -387,6 +387,14 @@ DROP CONSTRAINT uc_PersonID
 
 ## 修改表
 
+### ALTER
+
+添加或删除列：
+
+```
+alter table table_name drop colu
+```
+
 
 
 ## 查询
