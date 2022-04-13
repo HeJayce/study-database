@@ -383,6 +383,26 @@ DROP CONSTRAINT uc_PersonID
 
 规定没有给列赋值时的默认值。
 
+#### AUTO INCREMENT
+
+自增
+
+```sql
+CREATE TABLE Persons
+(
+ID int NOT NULL AUTO_INCREMENT,
+PRIMARY KEY (ID)
+)
+```
+
+可使id自增
+
+修改起始值
+
+```sql
+ALTER TABLE Persons AUTO_INCREMENT=100
+```
+
 
 
 ## 修改表
@@ -980,5 +1000,55 @@ load data infile '/dic/dic/file' into table database_name. tablename fields term
 
 
 
+## 视图
 
+视图是可视化的表，视图包含行和列，就像一个真实的表。视图中的字段就是来自一个或多个数据库中的真实的表中的字段。
+
+### 创建视图
+
+```sql
+CREATE VIEW view_name AS SELECT column_name(s) FROM table_name WHERE condition
+```
+
+例子：
+
+创建关于销售员的职工表
+
+总职工：
+
+![image-20220412152203540](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202204121522617.png)
+
+```sql
+CREATE  VIEW sell AS  SELECT * FROM `EMP` WHERE JOB="销售员";
+```
+
+![image-20220412152224544](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202204121522615.png)
+
+### 更新视图
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 索引
 
