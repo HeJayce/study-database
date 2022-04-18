@@ -18,12 +18,31 @@ redis的数据都是缓存在内存中，redis会周期性地把更新的数据�
 
 - 最常规的set/get操作，一般做一些复杂的计数功能的缓存，string 类型的值最大能存储 512MB。
 
+  ### set get
+  
   ```
   SET string_a "jayce"
   GET string_a
   ```
-
+  
   <img src="https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202204131454313.png" alt="image-20220413145424274" style="zoom:150%;" />
+
+  ### getrange
+  
+  获取存储在指定 key 中字符串的子字符串
+  
+  ```
+  GETRANGE KEY_NAME start end
+  ```
+  
+  ![image-20220415141752959](https://jaycehe.oss-cn-hangzhou.aliyuncs.com/markdown/202204151417270.png)
+
+`GETRANGE mykey 0 -1`等同于`get mykey`
+
+
+
+
+
 
 ### hash 
 
