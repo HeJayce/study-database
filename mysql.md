@@ -227,6 +227,7 @@ City varchar(255)
 * 保证某列的每行必须有唯一的值。比如ID等值需要唯一性
 
 * 语法：
+
 ```sql
  /*MySQL*/
  CREATE TABLE Persons
@@ -260,6 +261,7 @@ City varchar(255)
 ```sql
   ALTER TABLE Persons ADD UNIQUE (P_Id);
 ```
+
 * 定义多个列的 UNIQUE 约束:
 
 ```sql
@@ -338,7 +340,7 @@ DROP CONSTRAINT uc_PersonID
     ALTER TABLE Persons DROP CONSTRAINT pk_PersonID
     ALTER TABLE Persons DROP CONSTRAINT P_Id
     ```
-    
+
     
 
 #### FOREIGN KEY
@@ -417,6 +419,19 @@ alter table table_name drop colu
 
 
 
+## 查看表结构
+
+```sql
+describe table_name;
+desc table_name;
+#或
+show create table SALGRADE;
+```
+
+
+
+
+
 ## 查询
 
 当数据量大的时候，数据量会刷屏，使用pager less 可以切换less模式，除了pager less，还有pager more，pager awk、pager wc -l（统计行数）等，直接使用查询，可生效
@@ -448,7 +463,7 @@ SELECT DISTINCT name,age FROM student;
 
 
 
-#### SELECT LIMIT
+### LIMIT
 
 用于返回规定要返回记录的数目
 
@@ -638,9 +653,9 @@ where运算符
 | LIKE    |                        搜索某种模式                        | where ename like 'M%';内容有M的         |
 
 * **%** 表示多个字值，**_** 下划线表示一个字符；
-*  **M%** : 为能配符，正则表达式，表示的意思为模糊查询信息为 M 开头的。
-*  **%M%** : 表示查询包含M的所有内容。
-*  **%M_** : 表示查询以M在倒数第二位的所有内容。
+* **M%** : 为能配符，正则表达式，表示的意思为模糊查询信息为 M 开头的。
+* **%M%** : 表示查询包含M的所有内容。
+* **%M_** : 表示查询以M在倒数第二位的所有内容。
 
 
 
@@ -698,66 +713,6 @@ SELECT * FROM Websites ORDER BY alexa DESC;
 
 
 
-### 插入
-
-INSERT INTO 
-
-第一种形式，无需指定列名，只需提供被插值
-
-```sql
-INSERT INTO Websites (name, url, alexa, country) VALUES ('百度','https://www.baidu.com/','4','CN');
-```
-
-**如果不指定列名，需要将values全部按顺序列出**
-
-
-
-insert into select 和select into from 的区别
-
-```
-insert into scorebak select * from socre where neza='neza'   --插入一行,要求表scorebak 必须存在
-select *  into scorebak from score  where neza='neza'  --也是插入一行,要求表scorebak 不存在
-```
-
-
-
-### 更新
-
-UPDATE 
-
-```sql
-UPDATE [table_name] SET column1=value1,column2=value2,... WHERE some_column=some_value;
-```
-
-
-
-#### Update 警告！
-
-在更新记录时要格外小心！在上面的实例中，如果我们省略了 WHERE 子句，如下所示：
-
-```
-UPDATE Websites
-SET alexa='5000', country='USA'
-```
-
-执行以上代码会将 Websites 表中所有数据的 alexa 改为 5000，country 改为 USA。
-
-**！！！！执行没有 WHERE 子句的 UPDATE 要慎重，再慎重。！！！！**
-
-
-
-### 删除
-
-DELETE 
-
-```sql
-DELETE FROM [table_name] WHERE [some_column=some_value];
-```
-
-删除行
-
-
-
 ### 别名
 
 SQL 
@@ -769,7 +724,13 @@ SELECT column_name AS alias_name FROM table_name;
 SELECT column_name FROM table_name AS alias_name;
 ```
 
+别名有三种方式，直接写、as、**双引号（不要写单引号）**
 
+```sql
+SELECT column_name  alias_name FROM table_name;
+SELECT column_name AS alias_name FROM table_name;
+SELECT column_name   "alias name" FROM table_name;
+```
 
 将多列结合一起：
 
@@ -794,13 +755,15 @@ SELECT w.name, w.url, a.count, a.date FROM Websites AS w, access_log AS a WHERE 
 * 列名称很长或者可读性差
 * 需要把两个列或者多个列结合在一起
 
+
+
 ### 分组
 
 #### group by
 
 多个字段分组时，先按照字段顺序依次分组，如果前一个字段有重复，才会进行后续分组
 
-#### GROUP_CONCAT
+#### GROUP CONCAT
 
 GROUP_CONCAT() 函数会把每个分组的字段值都显示出来。
 
@@ -911,7 +874,95 @@ select * , columnName1+ifnull(columnName2,0) from tableName;
 
 columnName1，columnName2 为 int 型，当 columnName2 中，有值为 null 时，columnName1+columnName2=null，
 
- **ifnull(columnName2,0) 把 columnName2 中 null 值转为 0。**
+#### 空值参与运算
+
+空值参与运算，结果为空，可使用ifnull函数解决 
+
+```
+ifnull(columnName2,0)
+```
+
+把 columnName2 中 null 值转为 0。
+
+```sql
+SELECT 1 + IFNULL(LOSAL,0)  FROM  SALGRADE;
+```
+
+
+
+### 着重号
+
+在表名，字段等与数据库保留字冲突时使用
+
+```
+``
+```
+
+
+
+
+
+## 插入
+
+INSERT INTO 
+
+第一种形式，无需指定列名，只需提供被插值
+
+```sql
+INSERT INTO Websites (name, url, alexa, country) VALUES ('百度','https://www.baidu.com/','4','CN');
+```
+
+**如果不指定列名，需要将values全部按顺序列出**
+
+
+
+insert into select 和select into from 的区别
+
+```
+insert into scorebak select * from socre where neza='neza'   --插入一行,要求表scorebak 必须存在
+select *  into scorebak from score  where neza='neza'  --也是插入一行,要求表scorebak 不存在
+```
+
+
+
+## 更新
+
+UPDATE 
+
+```sql
+UPDATE [table_name] SET column1=value1,column2=value2,... WHERE some_column=some_value;
+```
+
+
+
+### Update 警告！
+
+在更新记录时要格外小心！在上面的实例中，如果我们省略了 WHERE 子句，如下所示：
+
+```
+UPDATE Websites
+SET alexa='5000', country='USA'
+```
+
+执行以上代码会将 Websites 表中所有数据的 alexa 改为 5000，country 改为 USA。
+
+**！！！！执行没有 WHERE 子句的 UPDATE 要慎重，再慎重。！！！！**
+
+
+
+## 删除
+
+DELETE 
+
+```sql
+DELETE FROM [table_name] WHERE [some_column=some_value];
+```
+
+删除行
+
+
+
+
 
 
 
