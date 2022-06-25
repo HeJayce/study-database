@@ -484,6 +484,10 @@ SELECT * FROM websites LIMIT 2,6;
 
 
 
+### 数据类型
+
+
+
 
 
 ### 正则表达式
@@ -634,43 +638,7 @@ SELECT [字段],[字段] FROM [表名] WHERE [字段] operator value;
 
 其中文本字段需要使用单引号
 
-where运算符
 
-| 运算符  |                            描述                            | 语法                                    |
-| :------ | :--------------------------------------------------------: | --------------------------------------- |
-| =       |                            等于                            |                                         |
-| <>      | 不等于。**注释：**在 SQL 的一些版本中，该操作符可被写成 != |                                         |
-| >       |                            大于                            |                                         |
-| <       |                            小于                            |                                         |
-| >=      |                          大于等于                          |                                         |
-| <=      |                          小于等于                          |                                         |
-| BETWEEN |                        在某个范围内                        | where [字段] between value1 and value2; |
-| IN      |                 指定针对某个列的多个可能值                 | where sal in (5000,3000,1500);          |
-| AND     |                    与，同时满足两个条件                    | where sal > 2000 and sal < 3000;        |
-| OR      |                  或，满足其中一个条件的值                  |                                         |
-| NOT     |                  非 满足不包含该条件的值                   | where not sal > 1500;  ==  sal>=1500    |
-| is null |                          查询空值                          |                                         |
-| LIKE    |                        搜索某种模式                        | where ename like 'M%';内容有M的         |
-
-* **%** 表示多个字值，**_** 下划线表示一个字符；
-* **M%** : 为能配符，正则表达式，表示的意思为模糊查询信息为 M 开头的。
-* **%M%** : 表示查询包含M的所有内容。
-* **%M_** : 表示查询以M在倒数第二位的所有内容。
-
-
-
-逻辑运算可以集合起来
-
-```sql
-SELECT * FROM Websites WHERE alexa > 15 AND (country='CN' OR country='USA');
-```
-
-逻辑运算的优先级：
-
-
-> ()    not        and         or
-
-XOR：记录满足其中一个条件，并且不满足另一个条件时，才会被查询出来
 
 
 
@@ -688,6 +656,62 @@ HAVING 关键字和 WHERE 关键字都可以用来过滤数据，且 HAVING 支�
 **区别**，where是挑选符合条件的查询，having是先全查出来再过滤。
 
 
+
+### 运算符
+
+#### 算数运算符
+
+`+` `-` `*` `/` `div` `mod` `%`取余
+
+当数值与字符串加时，会转换字符串为数值，转不了的转成0
+
+100 + '1' =101  100 + 'a' =100
+
+
+
+#### 比较运算符
+
+| 运算符  |                            描述                            | 语法                                    |
+| :------ | :--------------------------------------------------------: | --------------------------------------- |
+| =       |                            等于                            |                                         |
+| <=>     |                   安全等于，可以判断null                   |                                         |
+| <>      | 不等于。**注释：**在 SQL 的一些版本中，该操作符可被写成 != |                                         |
+| >       |                            大于                            |                                         |
+| <       |                            小于                            |                                         |
+| >=      |                          大于等于                          |                                         |
+| <=      |                          小于等于                          |                                         |
+| BETWEEN |                        在某个范围内                        | where [字段] between value1 and value2; |
+| IN      |                 指定针对某个列的多个可能值                 | where sal in (5000,3000,1500);          |
+| AND     |                    与，同时满足两个条件                    | where sal > 2000 and sal < 3000;        |
+| OR      |                  或，满足其中一个条件的值                  |                                         |
+| NOT     |                  非 满足不包含该条件的值                   | where not sal > 1500;  ==  sal>=1500    |
+| is null |                          查询空值                          |                                         |
+| LIKE    |                        搜索某种模式                        | where ename like 'M%';内容有M的         |
+
+* **%** 表示多个字值，
+* **_**  表示一个字符；
+* **M%** : 为能配符，正则表达式，表示的意思为模糊查询信息为 M 开头的。
+* **%M%** : 表示查询包含M的所有内容。
+* **%M_** : 表示查询以M在倒数第二位的所有内容。
+
+只要null参与，结果就为null
+
+
+
+#### 逻辑运算符
+
+逻辑运算可以集合起来
+
+```sql
+SELECT * FROM Websites WHERE alexa > 15 AND (country='CN' OR country='USA');
+```
+
+逻辑运算的优先级：
+
+
+> ()    not        and         or
+
+XOR：记录满足其中一个条件，并且不满足另一个条件时，才会被查询出来
 
 
 
@@ -916,9 +940,9 @@ INSERT INTO Websites (name, url, alexa, country) VALUES ('百度','https://www.b
 
 
 
-insert into select 和select into from 的区别
+insert into select 和select into from 
 
-```
+```sql
 insert into scorebak select * from socre where neza='neza'   --插入一行,要求表scorebak 必须存在
 select *  into scorebak from score  where neza='neza'  --也是插入一行,要求表scorebak 不存在
 ```
