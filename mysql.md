@@ -1,3 +1,9 @@
+---
+title: mysql
+date: 2022-06-29 09:59:03
+tags:
+---
+
 # Mysql
 
 [TOC]
@@ -211,6 +217,8 @@ City varchar(255)
 ```
 
 可使用 INSERT INTO 语句向空表写入数据。
+
+
 
 ### 约束
 
@@ -924,6 +932,20 @@ SELECT 1 + IFNULL(LOSAL,0)  FROM  SALGRADE;
 
 
 
+查看所有表大小和记录
+
+```sql
+SELECT concat_ws('.',a.table_schema ,a.table_name),
+CONCAT(ROUND(table_rows)) AS 'Number of Rows',
+CONCAT(ROUND(data_length/(1024*1024),4),',') AS 'data_size',
+CONCAT(ROUND(index_length/(1024*1024),4),'M') AS 'index_size',
+CONCAT(ROUND((data_length+index_length)/(1024*1024),4),'M') AS'Total'
+FROM
+information_schema. TABLES a
+    WHERE
+a.table_schema = 'j'  order by CAST(Total AS SIGNED);
+```
+
 
 
 ## 插入
@@ -1101,23 +1123,12 @@ CREATE  VIEW sell AS  SELECT * FROM `EMP` WHERE JOB="销售员";
 
 ### 更新视图
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
+CREATE OR REPLACE VIEW view_name AS
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+```
 
 
 
