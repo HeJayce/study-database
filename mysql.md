@@ -1138,3 +1138,58 @@ WHERE condition
 
 ## 索引
 
+索引是一张表，该表保存了主键与索引字段，并指向实体表的记录。类似于字典的目录。
+
+### 分类
+
+- 单列索引
+
+  - 普通索引
+
+    MySQL中基本索引类型，没有什么限制，允许在定义索引的列中插入重复值和空值，纯粹为了查询数据更快一 点。
+
+  - 唯一索引
+
+    索引列中的值必须是唯一的，但是允许为空值。
+
+  - 主键索引
+
+    是一种特殊的唯一索引，不允许有空值。（主键约束，就是一个主键索引）。
+
+- 组合索引
+
+  在表中的多个字段组合上创建的索引，只有在查询条件中使用了这些字段的左边字段时，索引才会被使用，使用组合索引时遵循最左前缀集合。
+
+- 全文索引
+
+  只有在MyISAM引擎上才能使用，只能在CHAR,VARCHAR,TEXT类型字段上使用全文索引，介绍了要求，说说什么是全文索引，就是在一堆文字中，通过其中的某个关键字等，就能找到该字段所属的记录行。
+
+
+
+### 创建索引
+
+#### 普通索引
+
+1. 直接创建
+
+   ```sql
+   CREATE INDEX indexName ON table_name (column_name)
+   ```
+
+2. 修改表结构
+
+   ```sql
+   ALTER table tableName ADD INDEX indexName(columnName)
+   ```
+
+3. 创建表的时候直接指定
+
+   ```
+   CREATE TABLE mytable(  
+   	ID INT NOT NULL,   
+   	username VARCHAR(16) NOT NULL,  
+   INDEX [indexName] (username(length))  
+   );  
+   ```
+
+   
