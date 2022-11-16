@@ -10,11 +10,268 @@ tags:
 
 
 
-## 安装与连接
+## Mysql运行原理
 
-### 安装
+### bin目录
 
-#### ubuntu
+![image-20221116143129853](https://oss.jayce.icu/markdown/image-20221116143129853.png)
+
+mysqld：直接启动一个mysql服务器进程
+
+mysql_safe ：启动脚本，会间接调用mysqld，并持续监控服务器运行状态，当进程出现问题，可以帮助重启服务器，还可以输出错误日志。
+
+mysql.server：启动脚本，间接调用mysql_safe，可在后面加入start参数来启动服务器。
+
+mysqld_multi：启动脚本，可以启动和停止多个mysql进程
+
+### mysql连接
+
+mysql采用tcp作为服务器与客户端的网络通信协议，mysql启动时会默认申请3306端口，等待客户端连接，如需更改，可以在启动时加上-P参数
+
+```sh
+mysqld -P3307
+```
+
+登陆mysql
+
+```sh
+mysql -h ip -P 3306 -uroot -p([密码)
+```
+
+
+
+#### UNIX域套接字
+
+如果服务器和客户端都在类UNIX的同一台机器，可以使用**UNIX域套接字**进行通信
+
+mysql服务器程序默认监听的UNIX域套接字文件名称是`/tmp/mysql.sock`
+
+如需更改，在启动服务器时，指定socket参数
+
+```sh
+mysqld --socket=path
+```
+
+如果客服端想通过UNIX域套接字进行通讯，也需要显式指定UNIX域套接字文件名称
+
+```shell
+mysql -hlocalhost  -uroot --socket=path  -p 
+```
+
+
+
+#### 处理请求过程
+
+![image-20221116150854394](https://oss.jayce.icu/markdown/image-20221116150854394.png)
+
+##### 连接管理
+
+每个客户端连接服务器时，服务器会创建一个线程，专门处理与这个客户端的交互。
+
+当客户端退出时，服务器不会立即销毁线程，而是缓存起来，在另一个新的客户端再连接时，把这个线程分配给新的客户端。
+
+从而不会去反复创建和销毁
+
+
+
+##### 解析与优化
+
+###### 查询缓存
+
+如果查询请求中出现重复的查询，mysql第一次会把查询结果和请求缓存起来，后续的重复请求会直接查询缓存中的请求和结果。
+
+但如果请求有所不同则不会识别，系统函数，自定义变量，系统表这类请求不会被缓存。
+
+mysql缓存系统会监控每张表，如果表数据或结构被修改，则删除缓存。
+
+###### 语法解析
+
+没有查询到缓存后，mysql会对查询语句分析，判断其是否正确，然后将需要查询的表和条件提取出来，放在mysql内部使用的一些数据结构上。
+
+###### 查询优化
+
+将语句进行优化，方法包括转换连接，表达式简化等。
+
+可以通过`EXPLAIN` 来查看查询计划。
+
+##### 存储引擎
+
+常用的时InnoDB和MyISAM，InnoDB是mysql的默认引擎（5.5.5版本以后，之前为MyISAM）
+
+设置存储引擎
+
+```mysql
+CREATE TABLE table_name(
+) ENGINE = MyISAM ;
+```
+
+修改存储引擎
+
+```mysql
+ALTER TABLE table_name ENGINE = MyISAM ;
+```
+
+
+
+#### 连接白名单
+
+```sql
+use mysql
+select user,host from user
+```
+
+看root用户的host是否为localhost
+
+如果为localhost，则只能本地登陆，所以要将localhost改为可以远程的ip
+
+如果是指定的IP，可以用：
+
+```sql
+grant all privileges on *.* to 'root'@'[允许的ip]' identified by '[密码]' with grant option;
+flush privileges; 
+```
+
+通过所有IP
+
+```sql
+grant all privileges on *.* to 'root'@'%' identified by 'root' with grant option;
+flush privileges;
+```
+
+
+
+### Mysql 配置与启动
+
+#### 命令行
+
+选项名前加`--`  , 如果选项名是多个单词，可以用`-` 或`_`连接
+
+```sh
+mysqld --skip-networking --default-strage-engine=MyISAM
+#选项名，= ， 选项值直接不能有空格
+```
+
+skip-networking  :   禁止使用TCP/IP 网络通信
+
+default-strage-engine :  设置默认引擎
+
+更多选项执行`mysql --help` 查看
+
+#### 配置文件
+
+my.cof
+
+配置文件寻找排序
+
+`/etc/my.cnf` >  `/etc/mysql/my.cnf`> `SYSCONFDIR/my.cnf`> `$MYSQL_HOME/my.cnf`
+
+SYSCONFDIR是使用CMake构建Mysql时指定的目录
+
+
+
+##### 配置文件格式
+
+```
+[server]
+option 1
+option 2 = value 2
+[mysqld]
+
+[client]
+
+[mysqladmin]
+
+```
+
+不同的选项组给不同的程序使用，除了[server]和[client] 分别作用与服务器和客户端
+
+mysqld_safe 和 mysql.server 都会读取[mysqld]。
+
+
+
+##### 配置文件优先级
+
+mysql会按上面提到过的顺序搜索文件.
+
+但也可以使用`--defaults-file`指定配置文件,如果我呢见无法正常读取则会报错.
+
+也可以使用`--defaults-extra-file`指定**额外的**配置文件``
+
+**如果多个配置文件有相同启动项，则以最后一个为准**
+
+ **在同一个配置文件有相同启动项，则以最后一个出现组中的启动项为准**
+
+**命令行比配置文件优先级高**
+
+
+
+### 系统变量
+
+查看系统变量:
+
+```mysql
+show global|session variables like ''
+#此处选项名的各个单词之间必须要下划线_
+#不指定global|session ,默认session
+```
+
+![image-20221116163012969](https://oss.jayce.icu/markdown/image-20221116163012969.png)
+
+修改系统变量:
+
+1. 启动时加入参数
+
+   ```sh
+   mysqld --max-connections=1000
+   ```
+
+2. 配置文件
+
+   ```
+   [server]
+   max-connections=1000
+   ```
+
+   
+
+3. SET(服务运行时)
+
+   1. GLOBAL 全局
+
+   2. SESSION 会话
+
+   服务器在启动时会把每个全局变量设置为默认
+
+   语法
+   
+   ```mysql
+   set [global|session]  option = value;
+   set [@@(global|session).]  option = value;
+   #举例
+   set global default_strage_engine = MyISAM;
+   set @@global.default_strage_engine = MyISAM;
+   set default_strage_engine = MyISAM;  #不指定默认session
+   ```
+
+**注意❗:**
+
+**不是所有的系统变量都有global和session的作用范围，有些只有global，有些只有session，大部分都有**
+
+**有些系统变量只读，不可修改**
+
+
+
+状态变量
+
+show global status like 'Max_used_connections';
+
+
+
+
+
+## 安装
+
+### ubuntu
 
 系统：Ubuntu16.04
 
@@ -46,7 +303,7 @@ service mysql restart
 
  接着授予权限：
 
-#### centos
+### centos
 
 系统：centos7
 
@@ -104,38 +361,7 @@ flush privileges;
 
 
 
-### 连接
 
-登陆mysql
-
-```sh
-mysql -h ip -P 3306 -uroot -p([密码)
-```
-
-
-
-```sql
-use mysql
-select user,host from user
-```
-
-看root用户的host是否为localhost
-
-如果为localhost，则只能本地登陆，所以要将localhost改为可以远程的ip
-
-如果是指定的IP，可以用：
-
-```sql
-grant all privileges on *.* to 'root'@'[允许的ip]' identified by '[密码]' with grant option;
-flush privileges; 
-```
-
-通过所有IP
-
-```sql
-grant all privileges on *.* to 'root'@'%' identified by 'root' with grant option;
-flush privileges;
-```
 
 
 
